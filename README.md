@@ -1,2 +1,4 @@
 # github-card
-Generate the your github profile card.
+Generate your github profile card.
+
+Solution of chai aur javascript video 39
