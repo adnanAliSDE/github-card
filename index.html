@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XHR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+    <main class="p-4 flex flex-col justify-between items-center w-full">
+        <input class="p-3 mb-3 w-56 rounded-md mt-4" type="text" name="username" id="username"
+            placeholder="Enter your github username">
+        <button id="generate-card" class="p-4 rounded-md py-2 bg-green-600 text-white">Generate Profile Card</button>
+        <div class="card-container">
+
+        </div>
+
+    </main>
+</body>
+<script>
+    const usernameInput = document.querySelector("#username");
+    const generateBtn = document.querySelector("#generate-card")
+
+    const populateCard = ({ avatar_url, name, followerCount }) => {
+        document.querySelector('main .card-container').innerHTML = `
+        <div class="card mx-auto mt-10 p-4 bg-white w-56 rounded-md">
+            <img src="${avatar_url}" alt="${name}"
+            class="w-32 mx-auto mb-2 rounded-full">
+            <h3 class="text-2xl font-bold text-center">${name ? name : "Unnamed"}</h3>
+            <p class=" text-center">${followerCount} ${followerCount != 1 ? 'followers' : 'follower'}</p>
+            </div>
+            `
+    }
+    const getDataAndPopulate = () => {
+        const username = usernameInput.value.trim();
+        usernameInput.value = '';
+        if (username) {
+            const reqUrl = `https://api.github.com/users/${username}`
+            const xhr = new XMLHttpRequest()
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    const { avatar_url, name, followers: followerCount } = JSON.parse(this.responseText)
+                    populateCard({ avatar_url, name, followerCount })
+                }
+            }
+            xhr.open('GET', reqUrl);
+            xhr.send()
+        } else {
+            alert("Please enter valid username")
+        }
+    }
+
+
+    generateBtn.addEventListener('click', getDataAndPopulate)
+
+</script>
+
+</html>
